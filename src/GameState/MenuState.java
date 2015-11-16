@@ -84,11 +84,11 @@ public class MenuState extends GameState {
 	public void handleInput() {
 		if(MyInput.isPressed(MyInput.BUTTON6)) {
 			select();
-		} else if(MyInput.isPressed(MyInput.BUTTON2)) {
+		} else if(MyInput.isPressed(MyInput.BUTTON2) || MyInput.isPressed(MyInput.BUTTON7)) {
 			if(currentOption > 0) {
 				currentOption--;
 			}
-		} else if(MyInput.isPressed(MyInput.BUTTON4)) {
+		} else if(MyInput.isPressed(MyInput.BUTTON4) ||MyInput.isPressed(MyInput.BUTTON8)) {
 			if(currentOption < options.length - 1) {
 				currentOption++;
 			}

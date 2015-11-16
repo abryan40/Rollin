@@ -8,13 +8,19 @@ public class MyInput {
 	public static boolean [] pkeys;
 		
 	//number of buttons in the game
-	public static final int NUM_KEYS = 6;
+	public static final int NUM_KEYS = 12;
 	public static final int BUTTON1 = 0; //space
 	public static final int BUTTON2 = 1; //W
 	public static final int BUTTON3 = 2; //A
 	public static final int BUTTON4 = 3; //S
 	public static final int BUTTON5 = 4; //D
 	public static final int BUTTON6 = 5; //Enter
+	public static final int BUTTON7 = 6; //Up
+	public static final int BUTTON8 = 7; //Down
+	public static final int BUTTON9 = 8; //Left
+	public static final int BUTTON10 = 9; //Right
+	public static final int BUTTON11 = 10; //J
+	public static final int BUTTON12 = 11; //Shift
 		
 	static {
 		keys = new boolean[NUM_KEYS];
@@ -61,6 +67,24 @@ public class MyInput {
 			break;
 		case 32:  //space
 			i = 0;
+			break;
+		case 38:  //up
+			i = 6;
+			break;
+		case 40:  //down
+			i = 7;
+			break;
+		case 37:  //left
+			i = 8;
+			break;
+		case 39:  //right
+			i = 9;
+			break;
+		case 74:  //j
+			i = 10;
+			break;
+		case 16:
+			i = 11;
 			break;
 		}
 		return i;

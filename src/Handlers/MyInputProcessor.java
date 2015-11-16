@@ -24,6 +24,24 @@ public class MyInputProcessor implements KeyListener {
 		if(k == KeyEvent.VK_ENTER) {
 			MyInput.setKey(MyInput.BUTTON6, true);
 		}
+		if(k == KeyEvent.VK_UP) {
+			MyInput.setKey(MyInput.BUTTON7, true);
+		}
+		if(k == KeyEvent.VK_DOWN) {
+			MyInput.setKey(MyInput.BUTTON8, true);
+		}
+		if(k == KeyEvent.VK_LEFT) {
+			MyInput.setKey(MyInput.BUTTON9, true);
+		}
+		if(k == KeyEvent.VK_RIGHT) {
+			MyInput.setKey(MyInput.BUTTON10, true);
+		}
+		if(k == KeyEvent.VK_J) {
+			MyInput.setKey(MyInput.BUTTON11, true);
+		}
+		if(k == KeyEvent.VK_SHIFT) {
+			MyInput.setKey(MyInput.BUTTON11, true);
+		}
 		return true;
 	}
 		
@@ -45,6 +63,24 @@ public class MyInputProcessor implements KeyListener {
 		}
 		if(k == KeyEvent.VK_ENTER) {
 			MyInput.setKey(MyInput.BUTTON6, false);
+		}
+		if(k == KeyEvent.VK_UP) {
+			MyInput.setKey(MyInput.BUTTON7, false);
+		}
+		if(k == KeyEvent.VK_DOWN) {
+			MyInput.setKey(MyInput.BUTTON8, false);
+		}
+		if(k == KeyEvent.VK_LEFT) {
+			MyInput.setKey(MyInput.BUTTON9, false);
+		}
+		if(k == KeyEvent.VK_RIGHT) {
+			MyInput.setKey(MyInput.BUTTON10, false);
+		}
+		if(k == KeyEvent.VK_J) {
+			MyInput.setKey(MyInput.BUTTON11, false);
+		}
+		if(k == KeyEvent.VK_SHIFT) {
+			MyInput.setKey(MyInput.BUTTON11, false);
 		}
 		return true;
 	}

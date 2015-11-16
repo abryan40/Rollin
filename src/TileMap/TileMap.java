@@ -83,6 +83,11 @@ public class TileMap {
 			width = numCols * tileSize;
 			height = numRows * tileSize;
 			
+			xMin = GamePanel.WIDTH - width;
+			xMax = 0;
+			yMin = GamePanel.HEIGHT - height;
+			yMax = 0;
+			
 			String delims = "\\s+";
 			for(int row = 0; row < numRows; row++) {
 				String line = br.readLine();
@@ -150,6 +155,10 @@ public class TileMap {
 		colOffset = (int)-this.x / tileSize;
 		rowOffset = (int)-this.y / tileSize;
 		
+	}
+	
+	public void setTween(double d) { 
+		tween = d; 
 	}
 	
 	//fixes bounds so the drawing won't be off screen
