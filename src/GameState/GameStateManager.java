@@ -11,13 +11,14 @@ public class GameStateManager {
 	
 	//different states game can be in
 	public static final int MENUSTATE = 0;
-	public static final int LEVELSTATE = 1;
+	public static final int LEVEL1STATE = 1;
 	
 	public GameStateManager() {
 		gameStates = new GameState[2];
 		
 		currentState = MENUSTATE;
 		gameStates[0] = new MenuState(this);
+		gameStates[1] = new Level1State(this);
 	}
 	
 	public void setState(int state) {
