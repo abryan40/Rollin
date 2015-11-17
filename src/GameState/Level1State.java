@@ -42,6 +42,9 @@ public class Level1State extends GameState {
 		//update player
 		player.update();
 		
+		tileMap.setPosition(GamePanel.WIDTH / 2 - player.getX(), GamePanel.HEIGHT / 2 - player.getY());
+		tileMap.fixBounds();
+		
 	}
 
 	public void draw(Graphics2D g) {

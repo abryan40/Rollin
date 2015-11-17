@@ -6,7 +6,7 @@ import Main.GamePanel;
 import TileMap.Tile;
 import TileMap.TileMap;
 
-/*class that holds all variables that 
+/* class that holds all variables that 
  * each map object, such as player,
  * enemy, items will have
  */
@@ -18,7 +18,7 @@ public abstract class MapObject {
 	protected double xMap;
 	protected double yMap;
 	
-	//posiion and vector
+	//position and vector
 	protected double x;
 	protected double y;
 	protected double dx;
@@ -118,7 +118,7 @@ public abstract class MapObject {
 	
 	/*
 	 * checks the map objects collision 
-	 * witht the tile map
+	 * with the tile map
 	 */
 	public void checkTileMapCollision() {
 		

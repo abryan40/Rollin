@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import Handlers.MyInput;
 import TileMap.Background;
 
+
 public class MenuState extends GameState {
 
 	private Background bg;
@@ -33,6 +34,8 @@ public class MenuState extends GameState {
 			titleColor = new Color(128, 0, 0);
 			titleFont = new Font("Jokerman", Font.PLAIN, 22);
 			font = new Font("Times New Roman", Font.PLAIN, 12);
+			
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -64,7 +67,7 @@ public class MenuState extends GameState {
 	}
 	
 	public void init() {
-		
+
 	}
 	
 	private void select() {

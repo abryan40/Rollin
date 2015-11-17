@@ -35,15 +35,16 @@ public class Player extends MapObject {
 	 * number of sprites per animation action
 	 * 2 = IDLE, 8 = WALKING, ect.
 	 */
-	private final int[] numFrames = {2, 8, 1, 2, 4, 2, 5};
+	private final int[] numFrames = {2, 4, 1, 1, 2, 1};
 	
 	//animation actions
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
 	private static final int JUMPING = 2;
 	private static final int FALLING = 3;
-	private static final int GLIDING = 4;
-	private static final int PEPPERONISHOT = 5;
+	private static final int PEPPERONISHOT = 4;
+	private static final int GLIDING = 5;
+	
 	
 	public Player(TileMap tm) {
 		super(tm);
@@ -78,11 +79,12 @@ public class Player extends MapObject {
 			for(int i = 0; i < 6; i++) {
 				BufferedImage[] bi = new BufferedImage[numFrames[i]];
 				for(int j = 0; j < numFrames[i]; j++) {
-					//check for scratch attack
+					//check for gliding
 					if(i != 6) {
 						bi[j] = spriteSheet.getSubimage(j * width, i * height, width,  height);
 					} else {
-						bi[j] = spriteSheet.getSubimage(j * width * 2, i * height, width,  height);
+						
+						bi[j] = spriteSheet.getSubimage(j * width, i * height * 2, width,  height - 30);
 					}
 				}
 				sprites.add(bi);
@@ -190,7 +192,7 @@ public class Player extends MapObject {
 			if(currentAction != PEPPERONISHOT) {
 				currentAction = PEPPERONISHOT;
 				animation.setFrames(sprites.get(PEPPERONISHOT));
-				animation.setDelay(100);
+				animation.setDelay(200);
 				width = 30;
 			}
 		} else if(dy > 0) {
@@ -200,6 +202,7 @@ public class Player extends MapObject {
 					animation.setFrames(sprites.get(GLIDING));
 					animation.setDelay(100);
 					width = 30;
+					height = 30;
 				}
 			} else if(currentAction != FALLING) {
 				currentAction = FALLING;
@@ -218,7 +221,7 @@ public class Player extends MapObject {
 			if(currentAction != WALKING) {
 				currentAction = WALKING;
 				animation.setFrames(sprites.get(WALKING));
-				animation.setDelay(40);
+				animation.setDelay(100);
 				width = 30;
 			}
 		} else {

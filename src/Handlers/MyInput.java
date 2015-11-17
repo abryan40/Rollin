@@ -8,7 +8,7 @@ public class MyInput {
 	public static boolean [] pkeys;
 		
 	//number of buttons in the game
-	public static final int NUM_KEYS = 12;
+	public static final int NUM_KEYS = 13;
 	public static final int BUTTON1 = 0; //space
 	public static final int BUTTON2 = 1; //W
 	public static final int BUTTON3 = 2; //A
@@ -18,9 +18,10 @@ public class MyInput {
 	public static final int BUTTON7 = 6; //Up
 	public static final int BUTTON8 = 7; //Down
 	public static final int BUTTON9 = 8; //Left
-	public static final int BUTTON10 = 9; //Right
-	public static final int BUTTON11 = 10; //J
-	public static final int BUTTON12 = 11; //Shift
+	public static final int BUTTON10 = 9;  		//Right
+	public static final int BUTTON11 = 10;  	//J
+	public static final int BUTTON12 = 11; 	    //Shift
+	public static final int BUTTONDEFAULT = 12; //No button pressed
 		
 	static {
 		keys = new boolean[NUM_KEYS];
@@ -50,43 +51,46 @@ public class MyInput {
 	//converts java key codes to myinput keycodes
 	public static int convertKeyCode(int i) {
 		switch(i) {
-		case 10:  //enter
+		case 10:    //enter
 			i = 5;
 			break;
-		case 87:  //w
+		case 87:    //w
 			i = 1;
 			break;
-		case 83:  //s
+		case 83:    //s
 			i = 3;
 			break;
-		case 65:  //a
+		case 65:    //a
 			i = 2;
 			break;
-		case 68:  //d
+		case 68:    //d
 			i = 4;
 			break;
-		case 32:  //space
+		case 32:    //space
 			i = 0;
 			break;
-		case 38:  //up
+		case 38:    //up
 			i = 6;
 			break;
-		case 40:  //down
+		case 40:    //down
 			i = 7;
 			break;
-		case 37:  //left
+		case 37:    //left
 			i = 8;
 			break;
-		case 39:  //right
+		case 39:    //right
 			i = 9;
 			break;
-		case 74:  //j
+		case 74:    //j
 			i = 10;
 			break;
 		case 16:
-			i = 11;
+			i = 11; //shift
 			break;
-		}
+		default:
+			i = 12; //no set button pressed
+			break;
+		} 
 		return i;
 	}
 }
