@@ -8,20 +8,19 @@ public class MyInput {
 	public static boolean [] pkeys;
 		
 	//number of buttons in the game
-	public static final int NUM_KEYS = 13;
-	public static final int BUTTON1 = 0; //space
-	public static final int BUTTON2 = 1; //W
-	public static final int BUTTON3 = 2; //A
-	public static final int BUTTON4 = 3; //S
-	public static final int BUTTON5 = 4; //D
-	public static final int BUTTON6 = 5; //Enter
-	public static final int BUTTON7 = 6; //Up
-	public static final int BUTTON8 = 7; //Down
-	public static final int BUTTON9 = 8; //Left
+	public static final int NUM_KEYS = 12;
+	public static final int BUTTON1 = 0; 		//space
+	public static final int BUTTON2 = 1; 		//W
+	public static final int BUTTON3 = 2; 		//A
+	public static final int BUTTON4 = 3; 		//S
+	public static final int BUTTON5 = 4;	    //D
+	public static final int BUTTON6 = 5;	    //Enter
+	public static final int BUTTON7 = 6;        //Up
+	public static final int BUTTON8 = 7;        //Down
+	public static final int BUTTON9 = 8;        //Left
 	public static final int BUTTON10 = 9;  		//Right
-	public static final int BUTTON11 = 10;  	//J
-	public static final int BUTTON12 = 11; 	    //Shift
-	public static final int BUTTONDEFAULT = 12; //No button pressed
+	public static final int BUTTON11 = 10; 	    //Shift
+	public static final int BUTTONDEFAULT = 11; //No button pressed
 		
 	static {
 		keys = new boolean[NUM_KEYS];
@@ -81,14 +80,11 @@ public class MyInput {
 		case 39:    //right
 			i = 9;
 			break;
-		case 74:    //j
-			i = 10;
-			break;
 		case 16:
-			i = 11; //shift
+			i = 10; //shift
 			break;
 		default:
-			i = 12; //no set button pressed
+			i = 11; //no set button pressed
 			break;
 		} 
 		return i;

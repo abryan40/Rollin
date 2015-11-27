@@ -6,27 +6,21 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import Audio.Audio;
 import TileMap.TileMap;
 
 public class Player extends MapObject {
 
 	//player variables
-	private int health;
-	private int maxHealth;
-	private int pepperonis;
-	private int maxPepperonis;
 	private boolean dead;
-	private boolean flinching;
-	private long flinchTime;
-	
-	//pepperoni shot
-	private boolean firing;
-	private int pepCost;
-	private int pepDamage;
-	//private ArrayList<Pepperoni> pepperoniList;
+	private boolean win;
 	
 	//gliding
 	private boolean gliding;
+	
+	//tilemap
+	private static int tmHeight;
+	private static int tmWidth;
 	
 	//animations
 	private ArrayList<BufferedImage[]> sprites;
@@ -35,15 +29,16 @@ public class Player extends MapObject {
 	 * number of sprites per animation action
 	 * 2 = IDLE, 8 = WALKING, ect.
 	 */
-	private final int[] numFrames = {2, 4, 1, 1, 2, 1};
+	private final int[] numFrames = {2, 8, 1, 2, 2};
 	
 	//animation actions
 	private static final int IDLE = 0;
 	private static final int WALKING = 1;
 	private static final int JUMPING = 2;
 	private static final int FALLING = 3;
-	private static final int PEPPERONISHOT = 4;
-	private static final int GLIDING = 5;
+	private static final int GLIDING = 4;
+	
+	private Audio sfxJump;
 	
 	
 	public Player(TileMap tm) {
@@ -53,6 +48,9 @@ public class Player extends MapObject {
 		height = 30;
 		cwidth = 20;
 		cheight = 20;
+		
+		tmHeight = tm.getHeight();
+		tmWidth = tm.getWidth();
 		
 		moveSpeed = 0.3;
 		maxSpeed = 1.6;
@@ -64,28 +62,17 @@ public class Player extends MapObject {
 		
 		facingRight = true;
 		
-		health = maxHealth = 5;
-		pepperonis = maxPepperonis = 2500;
-		
-		pepCost = 200;
-		pepDamage = 5;
-		//pepperoniList = new ArrayList<Pepperoni>();
+		sfxJump = new Audio("/Audio/Jump.wav");
 		
 		//load sprites
 		try {
-			BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/Player/playersprites.gif"));
+			BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/spritesheet.gif"));
 			
 			sprites = new ArrayList<BufferedImage[]>();
-			for(int i = 0; i < 6; i++) {
+			for(int i = 0; i < 5; i++) {
 				BufferedImage[] bi = new BufferedImage[numFrames[i]];
 				for(int j = 0; j < numFrames[i]; j++) {
-					//check for gliding
-					if(i != 6) {
-						bi[j] = spriteSheet.getSubimage(j * width, i * height, width,  height);
-					} else {
-						
-						bi[j] = spriteSheet.getSubimage(j * width, i * height * 2, width,  height - 30);
-					}
+					bi[j] = spriteSheet.getSubimage(j * width, i * height, width,  height);
 				}
 				sprites.add(bi);
 			}
@@ -97,26 +84,6 @@ public class Player extends MapObject {
 		currentAction = IDLE;
 		animation.setFrames(sprites.get(IDLE));
 		animation.setDelay(400);
-	}
-	
-	public int getHealth() {
-		return health;
-	}
-	
-	public int getMaxHealth() {
-		return maxHealth; 
-	}
-	
-	public int getPepperonis() {
-		return pepperonis;
-	}
-	
-	public int getMaxPepperonis() {
-		return maxPepperonis;
-	}
-	
-	public void setFiring() {
-		firing = true;
 	}
 	
 	public void setGliding(boolean b) {
@@ -148,11 +115,6 @@ public class Player extends MapObject {
 					dx = 0;
 				}
 			}
-		}
-		
-		//cannot attack while moving unless in air
-		if((currentAction == PEPPERONISHOT) && !(jumping || falling)) {
-			dx = 0;
 		}
 		
 		//jumping
@@ -187,32 +149,25 @@ public class Player extends MapObject {
 		checkTileMapCollision();
 		setPosition(tempX, tempY);
 		
-		//set animation
-		if(firing) {
-			if(currentAction != PEPPERONISHOT) {
-				currentAction = PEPPERONISHOT;
-				animation.setFrames(sprites.get(PEPPERONISHOT));
-				animation.setDelay(200);
-				width = 30;
-			}
-		} else if(dy > 0) {
+		if(dy > 0) {
 			if(gliding) {
 				if(currentAction != GLIDING) {
 					currentAction = GLIDING;
 					animation.setFrames(sprites.get(GLIDING));
-					animation.setDelay(100);
+					animation.setDelay(150);
 					width = 30;
 					height = 30;
 				}
 			} else if(currentAction != FALLING) {
 				currentAction = FALLING;
 				animation.setFrames(sprites.get(FALLING));
-				animation.setDelay(30);
+				animation.setDelay(150);
 				width = 30;
 			}
 		} else if( dy < 0) {
 			if(currentAction != JUMPING) {
 				currentAction = JUMPING;
+				sfxJump.play();
 				animation.setFrames(sprites.get(JUMPING));
 				animation.setDelay(-1);
 				width = 30;
@@ -228,34 +183,23 @@ public class Player extends MapObject {
 			if(currentAction != IDLE) {
 				currentAction = IDLE;
 				animation.setFrames(sprites.get(IDLE));
-				animation.setDelay(400);
+				animation.setDelay(250);
 				width = 30;
 			}
 		}
 		
 		animation.update();
 		
-		//set the direction
-		if(currentAction != PEPPERONISHOT) {
-			if(right) {
-				facingRight = true;
-			} else if(left) {
-				facingRight = false;
-			}
+		if(right) {
+			facingRight = true;
+		} else if(left) {
+			facingRight = false;
 		}
 	}
 	
 	public void draw(Graphics2D g) {
 		
 		setMapPosition();
-		
-		//draw player
-		if(flinching) {
-			long elapsed = (System.nanoTime() - flinchTime) / 1000000;
-			if(elapsed / 100 % 2 == 0) {
-				return;
-			}
-		}
 		
 		if(facingRight) {
 			g.drawImage(animation.getImage(), (int)(x + xMap - width / 2), (int)(y + yMap - height / 2), null);
@@ -264,4 +208,27 @@ public class Player extends MapObject {
 		}
 	}
 	
+	public boolean isDead() {
+		if(getX() > tmWidth - 10 && getY() > tmHeight) {
+			dead = false;
+		} else if(getX() < 0 || getY() > tmHeight) {
+			dead = true;
+		} else {
+			dead = false;
+		}
+		return dead;
+	}
+	
+	public boolean playerWin() {
+		if(getX() > tmWidth) {
+			win = true;
+		} else {
+			win = false;
+		}
+		return win;
+	}
+	
+	public void stop() {
+		moveSpeed = fallSpeed = stopSpeed = 0;
+	}
 }

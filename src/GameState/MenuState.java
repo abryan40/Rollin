@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 
+import Audio.Audio;
 import Handlers.MyInput;
 import TileMap.Background;
 
@@ -11,6 +12,8 @@ import TileMap.Background;
 public class MenuState extends GameState {
 
 	private Background bg;
+	
+	private Audio music;
 	
 	private int currentOption = 0;
 	private String [] options = {
@@ -31,10 +34,12 @@ public class MenuState extends GameState {
 			bg = new Background("/Backgrounds/Menu.gif", 1);
 			bg.setVector(-0.1, 0);
 			
-			titleColor = new Color(128, 0, 0);
-			titleFont = new Font("Jokerman", Font.PLAIN, 22);
+			titleColor = Color.WHITE;
+			titleFont = new Font("Times New Roman", Font.PLAIN, 28);
 			font = new Font("Times New Roman", Font.PLAIN, 12);
 			
+			music = new Audio("/Audio/mainTheme.wav");
+			music.play();
 			
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -53,30 +58,31 @@ public class MenuState extends GameState {
 		//draw title
 		g.setColor(titleColor);
 		g.setFont(titleFont);
-		g.drawString("Suddenly, Cold Pizza", 55, 70);
+		g.drawString("Rollin'", 120, 100);
 		
 		g.setFont(font);
 		for(int i = 0; i < options.length; i++) {
 			if(i == currentOption) {
 				g.setColor(Color.BLACK);
 			} else {
-				g.setColor(Color.RED);
+				g.setColor(Color.WHITE);
 			}
 			g.drawString(options[i], 145, 140 + i * 15);
 		}
 	}
 	
 	public void init() {
-
+		music.play();
 	}
 	
 	private void select() {
 		switch (currentOption) {
 		case 0: 
+			music.stop();
 			gsm.setState(GameStateManager.LEVEL1STATE);
 			break;
 		case 1:
-			//help
+			gsm.setState(GameStateManager.HELPSTATE);
 			break;
 		case 2: 
 			//close
