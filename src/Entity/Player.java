@@ -40,7 +40,6 @@ public class Player extends MapObject {
 	
 	private Audio sfxJump;
 	
-	
 	public Player(TileMap tm) {
 		super(tm);
 		
@@ -66,7 +65,7 @@ public class Player extends MapObject {
 		
 		//load sprites
 		try {
-			BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/spritesheet.gif"));
+			BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/playerSprites.gif"));
 			
 			sprites = new ArrayList<BufferedImage[]>();
 			for(int i = 0; i < 5; i++) {
@@ -93,6 +92,12 @@ public class Player extends MapObject {
 	private void getNextPosition() {
 		
 		//movement
+		
+		if(getX() == 15) {
+			dx = 0;
+			x = 16;
+		}
+		
 		if(left) {
 			dx -= moveSpeed;
 			if(dx < -maxSpeed) {
@@ -139,7 +144,6 @@ public class Player extends MapObject {
 				dy = maxFallSpeed;
 			}
 		}
-		
 	}
 	
 	//updates physics and player position
@@ -208,6 +212,16 @@ public class Player extends MapObject {
 		}
 	}
 	
+	public boolean gotCoin(Coin coin) {
+		boolean got = false;
+		if(coin.getX() <= (x + 15) && coin.getX() >= (x - 15) && coin.getY() <= (y + 15) && coin.getY() >= (y - 15)) {
+			coin.playerGot();
+			got = true;
+		}
+		return got;
+	}
+	
+	//returns whether or not the player is dead
 	public boolean isDead() {
 		if(getX() > tmWidth - 10 && getY() > tmHeight) {
 			dead = false;
@@ -219,6 +233,7 @@ public class Player extends MapObject {
 		return dead;
 	}
 	
+	//returns whether the player has won or not
 	public boolean playerWin() {
 		if(getX() > tmWidth) {
 			win = true;
@@ -228,6 +243,7 @@ public class Player extends MapObject {
 		return win;
 	}
 	
+	//stops the player
 	public void stop() {
 		moveSpeed = fallSpeed = stopSpeed = 0;
 	}

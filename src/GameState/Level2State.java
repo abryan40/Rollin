@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 
 import Audio.Audio;
+import Entity.Coin;
 import Entity.Player;
 import Handlers.MyInput;
 import Main.GamePanel;
@@ -17,6 +18,10 @@ public class Level2State extends GameState {
 	private Background bg;
 	
 	private Player player;
+	private Coin[] coins;
+	
+	//HUD stuff
+	private double total;
 	
 	private Audio music;
 	private Audio sfxWin;
@@ -42,6 +47,26 @@ public class Level2State extends GameState {
 		player = new Player(tileMap);
 		player.setPosition(25, 220);
 		
+		coins = new Coin[12];
+		for(int i = 0; i < coins.length; i++) {
+			coins[i] = new Coin(tileMap, "yellow");
+		}
+		
+		total = 0;
+		
+		coins[0].setPosition(100, 230);
+		coins[1].setPosition(420, 230);
+		coins[2].setPosition(420, 170);
+		coins[3].setPosition(800, 230);
+		coins[4].setPosition(1090, 200);
+		coins[5].setPosition(1215, 170);
+		coins[6].setPosition(1510, 24);
+		coins[7].setPosition(1860, 80);
+		coins[8].setPosition(1710, 170);
+		coins[9].setPosition(1860, 200);
+		coins[10].setPosition(2175, 230);
+		coins[11].setPosition(2355, 170);
+		
 		music = new Audio("/Audio/Level2.wav");
 		sfxWin = new Audio("/Audio/win.wav");
 		music.play();
@@ -51,6 +76,15 @@ public class Level2State extends GameState {
 		
 		//update keypresses
 		handleInput();
+		
+		//update coins
+		for(int i = 0; i < coins.length; i++) {
+			if(player.gotCoin(coins[i])) {
+				total++;
+				coins[i].setPosition(0, 0);
+			}
+			coins[i].update();
+		}
 		
 		//update player
 		player.update();
@@ -76,8 +110,16 @@ public class Level2State extends GameState {
 		//draw the tilemap
 		tileMap.draw(g);
 		
+		//draw HUD
+		g.drawString("Coins: " + (int)total + "/12", 5, 15);
+		
 		//draw the player
 		player.draw(g);
+		
+		//draw the coins
+		for(int i = 0; i < coins.length; i++) {
+			coins[i].draw(g);
+		}
 		
 		if(player.playerWin()) {
 			if(!hasPlayed) {
@@ -108,9 +150,11 @@ public class Level2State extends GameState {
 	
 	public void win(Graphics2D g) {
 		g.setColor(Color.WHITE);
-		g.drawString("Level Complete!", 200, 50);
+		g.drawString("Level Complete!", 210, 60);
+		g.drawString("You completed " + (int)((total / 12) * 100) + "%", 210, 75);
+		g.drawString("of the level!", 210, 85);
 		g.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		g.drawString("Press enter to advance.", 200, 100);
+		g.drawString("Press enter to advance.", 210, 100);
 		player.stop();
 		if(MyInput.keys[MyInput.BUTTON6]) {
 			nextLevel();
