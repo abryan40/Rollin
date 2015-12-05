@@ -7,6 +7,11 @@ import java.awt.Graphics2D;
 import Handlers.MyInput;
 import TileMap.Background;
 
+/*
+ * This is just here for the player to know
+ * how to play the game.
+ */
+
 public class HelpState extends GameState {
 
 	private Background bg;

@@ -6,6 +6,12 @@ import Audio.Audio;
 import Handlers.MyInput;
 import TileMap.Background;
 
+/*
+ * All this class is used for is the credits
+ * this state gets called when the player wins,
+ * either on the last level, or the secret level.
+ */
+
 public class CreditsState  extends GameState {
 
 	private Background bg;
@@ -39,7 +45,7 @@ public class CreditsState  extends GameState {
 
 	public void handleInput() {
 		if(MyInput.isPressed(MyInput.BUTTON6)) {
-			music.stop();
+			music.close();
 			gsm.setState(GameStateManager.MENUSTATE);
 		}
 	}

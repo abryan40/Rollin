@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 
 import Audio.Audio;
 import Handlers.MyInput;
+import Handlers.MyInputProcessor;
 import TileMap.Background;
 
 
@@ -49,6 +50,8 @@ public class MenuState extends GameState {
 	public void update() {
 		bg.update();
 		handleInput();
+		gsm.score = 0;
+		gsm.lives = 5;
 	}
 	
 	public void draw(Graphics2D g) {
@@ -79,7 +82,7 @@ public class MenuState extends GameState {
 		switch (currentOption) {
 		case 0: 
 			music.stop();
-			gsm.setState(GameStateManager.LEVEL1STATE);
+			gsm.setState(GameStateManager.HARDMODESTATE);
 			break;
 		case 1:
 			gsm.setState(GameStateManager.HELPSTATE);
@@ -91,6 +94,7 @@ public class MenuState extends GameState {
 	}
 	
 	public void handleInput() {
+		
 		if(MyInput.isPressed(MyInput.BUTTON6)) {
 			select();
 		} else if(MyInput.isPressed(MyInput.BUTTON2) || MyInput.isPressed(MyInput.BUTTON7)) {
@@ -103,5 +107,4 @@ public class MenuState extends GameState {
 			}
 		}
 	}
-	
 }

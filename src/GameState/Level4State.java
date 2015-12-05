@@ -12,6 +12,12 @@ import Main.GamePanel;
 import TileMap.Background;
 import TileMap.TileMap;
 
+/*
+ * This class is for level 4, or the 
+ * secret level. This occurs when the player
+ * gets all 19 coins on level 3.
+ */
+
 public class Level4State extends GameState {
 	
 	private TileMap tileMap;
@@ -22,6 +28,9 @@ public class Level4State extends GameState {
 	
 	//HUD stuff
 	private int total;
+	private double time;
+	private double score;
+	private boolean hasComputed;
 	
 	//audio stuff
 	private Audio music;
@@ -47,12 +56,18 @@ public class Level4State extends GameState {
 		player = new Player(tileMap);
 		player.setPosition(16, 400);
 
-		coins = new Coin[122];
+		coins = new Coin[121];
 		for(int i = 0; i < coins.length; i++) {
 			coins[i] = new Coin(tileMap, "blue");
 		}
 		
 		total = 0;
+		if(gsm.hardMode) {
+			time = 120;
+		} else {
+			time = 200;
+		}
+		hasComputed = false;
 		
 		//don't ask how this works
 		//just know it was like two hours of plug and chug
@@ -101,15 +116,15 @@ public class Level4State extends GameState {
 			coins[i].setPosition(j, 80);
 			j = j + 30;
 		}
-		j = 30;
-		for(int i = 106; i < 122; i++) {
+		j = 60;
+		for(int i = 106; i < 121; i++) {
 			coins[i].setPosition(j, 20);
 			j = j + 30;
 		}
 		
-		music = new Audio("/Audio/Level1.wav");
+		music = new Audio("/Audio/Level4.wav");
 		sfxWin = new Audio("/Audio/win.wav");
-		//music.play();
+		music.play();
 	}
 
 	public void update() {
@@ -121,15 +136,31 @@ public class Level4State extends GameState {
 		for(int i = 0; i < coins.length; i++) {
 			if(player.gotCoin(coins[i])) {
 				total++;
-				coins[i].setPosition(0,0);
+				if(gsm.hardMode) {
+					score = score + 30;
+				} else {
+					score = score + 10;
+				}
+				coins[i].setPosition(0, 0);
 			}
 			coins[i].update();
 		}
 		
 		//update player
 		player.update();
-		System.out.println(player.getX() + ", " + player.getY());
 		
+		// decrement time
+		if (!player.playerWin()) {
+			if(gsm.hardMode) {
+				time = time - 0.035;
+			} else {
+				time = time - 0.015;
+			}
+			if(time <= 0) {
+				reset();
+			}
+		}
+
 		//checks if the player is dead
 		if(player.isDead()) {
 			reset();
@@ -153,8 +184,11 @@ public class Level4State extends GameState {
 		//draw the tilemap
 		tileMap.draw(g);
 		
-		//draw HUD
-		g.drawString("Coins: " + total, 5, 15);
+		// draw HUD
+		g.setFont(new Font("Arial", Font.PLAIN, 10));
+		g.setColor(Color.BLACK);
+		g.drawString("Coins: " + (int)total, 5, 10);
+		g.drawString("Time: " + (int)time, 5, 20);
 		
 		//draw the player
 		player.draw(g);
@@ -165,8 +199,13 @@ public class Level4State extends GameState {
 		}
 		
 		//checks if the player has won
-		if(player.getX() < 40 && player.getY() <= 20) {
-			if(total == 121) {
+		if(player.getX() < 60 && player.getY() <= 20) {
+			if(total == 120) { 
+				if (!hasPlayed) {
+					music.stop();
+					sfxWin.play();
+					hasPlayed = true;
+				}
 				win(g);
 			} else { 
 				g.setColor(Color.BLACK);
@@ -186,24 +225,45 @@ public class Level4State extends GameState {
 	
 	//resets the level
 	public void reset() {
-		music.stop();
-		gsm.setState(gsm.LEVEL4STATE);
+		music.close();
+		if(gsm.lives == 0) {
+			gsm.setState(gsm.GAMEOVERSTATE);
+		} else {
+			gsm.setState(gsm.LEVEL4STATE);
+		}
 	}
 	
 	//goes to the next level if the player has won
 	public void nextLevel() {
+		music.close();
 		gsm.setState(gsm.CREDITSSTATE);
+	}
+	
+	//computes score
+	private void computeScore() {
+		if(!hasComputed) {
+			score = score + (time * 10);
+			gsm.score = gsm.score + (int) score;
+		}
+		hasComputed = true;
 	}
 	
 	//gets called when the player wins
 	public void win(Graphics2D g) {
+		computeScore();
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("Arial", Font.BOLD, 24));
-		g.drawString("Congratulations!", 50, 100);
+		g.drawString("Congratulations!", 40, 100);
 		g.setFont(new Font("Arial", Font.PLAIN, 18));
-		g.drawString("You completed the secret", 50, 120);
-		g.drawString("level of Rollin'!", 50, 140);
-		g.drawString("Thank you for playing!", 50, 160);
+		g.drawString("You completed the secret", 40, 120);
+		if(gsm.hardMode) {
+			g.drawString("level on hard mode of Rollin'.", 40, 140);
+			g.drawString("Score: " + gsm.score + " x2 = " + (gsm.score * 2), 40, 160);
+		} else {
+			g.drawString("level of Rollin' with", 40, 140);
+			g.drawString("a total score of: " + gsm.score, 40, 160);
+		}
+		g.drawString("Thank you for playing!", 40, 180);
 		g.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		g.drawString("Press enter to advance.", 50, 200);
 		player.stop();

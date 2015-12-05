@@ -12,6 +12,15 @@ import Main.GamePanel;
 import TileMap.Background;
 import TileMap.TileMap;
 
+/*
+ * This is the "final" level of the game.
+ * There are 19 coins to collect in this level, 
+ * scattered and hidden throughout.
+ * If the player collects all of them, he is taken
+ * back to the overworld, with the option of going
+ * to the secret level.
+ */
+
 public class Level3State extends GameState {
 	
 	private TileMap tileMap;
@@ -23,6 +32,9 @@ public class Level3State extends GameState {
 	//HUD stuff
 	private double total;
 	int percent;
+	private double time;
+	private double score;
+	private boolean hasComputed;
 	
 	private Audio music;
 	private Audio sfxWin;
@@ -54,6 +66,12 @@ public class Level3State extends GameState {
 		}
 		
 		total = 0;
+		if(gsm.hardMode) {
+			time = 200;
+		} else {
+			time = 300;
+		}
+		hasComputed = false;
 		
 		coins[0].setPosition(130, 430);
 		coins[1].setPosition(60, 280);
@@ -90,15 +108,33 @@ public class Level3State extends GameState {
 		for(int i = 0; i < coins.length; i++) {
 			if(player.gotCoin(coins[i])) {
 				total++;
+				if(gsm.hardMode) {
+					score = score + 300;
+				} else {
+					score = score + 100;
+				}
 				coins[i].setPosition(0, 0);
 			}
 			coins[i].update();
 		}
-				
+		
+		//calculate percentage of coins
 		calculatePercent();
 		
 		//update player
 		player.update();
+		
+		// decrement time
+		if (!player.playerWin()) {
+			if(gsm.hardMode) {
+				time = time - 0.035;
+			} else {
+				time = time - 0.015;
+			}
+			if(time <= 0) {
+				reset();
+			}
+		}
 		
 		if(player.isDead()) {
 			reset();
@@ -122,9 +158,13 @@ public class Level3State extends GameState {
 		//draw the tilemap
 		tileMap.draw(g);
 		
-		//draw HUD
-		g.drawString("Coins: " + (int)total + "/ ?", 5, 15);
-		
+		// draw HUD
+		g.setColor(Color.WHITE);
+		g.setFont(new Font("Arial", Font.PLAIN, 10));
+		g.drawString("Coins: " + (int)total + "/ ?", 5, 10);
+		g.drawString("Time: " + (int) time, 5, 20);
+		g.drawString("Lives: " + gsm.lives, 5, 30);
+
 		//draw the player
 		player.draw(g);
 		
@@ -151,18 +191,32 @@ public class Level3State extends GameState {
 	}
 	
 	public void reset() {
-		music.stop();
-		gsm.setState(gsm.LEVEL3STATE);
+		music.close();
+		gsm.lives--;
+		if(gsm.lives == 0) {
+			gsm.setState(gsm.GAMEOVERSTATE);
+		} else {
+			gsm.setState(gsm.LEVEL3STATE);
+		}
 	}
 	
 	public void nextLevel() {
-		music.stop();
+		music.close();
 		sfxWin.stop();
 		if(percent != 100) {
 			gsm.setState(gsm.CREDITSSTATE);
 		} else {
-			gsm.setState(gsm.LEVEL4STATE);
+			gsm.setState(gsm.OVERWORLD4STATE);
 		}
+	}
+	
+	//computes score
+	private void computeScore() {
+		if(!hasComputed) {
+			score = score + (time * 10);
+			gsm.score = gsm.score + (int)score;
+		}
+		hasComputed = true;
 	}
 	
 	private void calculatePercent() {
@@ -172,16 +226,20 @@ public class Level3State extends GameState {
 	public void win(Graphics2D g) {
 		g.setColor(Color.WHITE);
 		g.drawString("YOU WIN!", 155, 60);
-		g.drawString("You completed " + percent + "%", 155, 75);
-		g.drawString("of the level!", 155, 90);
+		g.drawString("You completed " + percent + "%", 155, 80);
+		g.drawString("of the level!", 155, 100);
+		computeScore();
+		g.drawString("Score: " + (int)score, 155, 120);
 		if(percent != 100) {
-			g.drawString("Maybe try collecting", 155, 110);
-			g.drawString("everything next time...", 155, 125);
+			g.drawString("Maybe try collecting", 155, 140);
+			g.drawString("everything next time...", 155, 160);
+			g.drawString("Total score: " + gsm.score, 155, 180);
 			g.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-			g.drawString("Press enter to advance.", 155, 150);
+			g.drawString("Press enter to advance.", 155, 200);
 		} else {
+			g.drawString("You unlocked a secret level!", 155, 140);
 			g.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-			g.drawString("Press enter to advance.", 155, 105);
+			g.drawString("Press enter to advance.", 155, 160);
 		}
 		player.stop();
 		if(MyInput.keys[MyInput.BUTTON6]) {
